@@ -21,8 +21,9 @@ jobs:
       - name: Install packaging tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y rpm ruby ruby-dev build-essential createrepo-c
+          sudo apt-get install -y rpm ruby ruby-dev build-essential createrepo-c python3-pip
           gem install --no-document fpm
+          pip3 install --quiet packaging
 
       - name: Retrieve previous packages
         continue-on-error: true
@@ -142,6 +143,94 @@ jobs:
           createrepo_c --update repo
           
           echo "Repository contains $(find repo -name '*.rpm' | wc -l) total packages"
+
+      - name: Generate packages.json manifest
+        run: |
+          set -euo pipefail
+          
+          # Create packages.json from all RPMs
+          echo "Generating packages.json manifest..."
+          
+          # Initialize JSON array
+          echo "{\"packages\": [" > repo/packages.json
+          
+          first=true
+          for rpm_file in repo/*.rpm; do
+            if [ ! -f "$rpm_file" ]; then
+              continue
+            fi
+            
+            # Extract package name and version from filename
+            # Format: name-version.rpm
+            filename="$(basename "$rpm_file" .rpm)"
+            
+            # Find the last dash which separates name from version
+            # This handles package names with dashes
+            pkg_name="${filename%-*}"
+            pkg_version="${filename##*-}"
+            
+            # Add comma before appending (skip for first item)
+            if [ "$first" = false ]; then
+              echo "," >> repo/packages.json
+            fi
+            first=false
+            
+            # Check if this package already exists in the JSON
+            echo -n "  {\"name\": \"$pkg_name\", \"versions\": [\"$pkg_version\"]}" >> repo/packages.json
+          done
+          
+          # Close JSON array
+          echo "" >> repo/packages.json
+          echo "]}" >> repo/packages.json
+          
+          # Merge duplicate packages and consolidate versions
+          python3 << 'PYTHON_SCRIPT'
+          import json
+          
+          with open('repo/packages.json', 'r') as f:
+            data = json.load(f)
+          
+          # Consolidate packages with same name
+          packages_dict = {}
+          for pkg in data['packages']:
+            if pkg['name'] not in packages_dict:
+              packages_dict[pkg['name']] = {'name': pkg['name'], 'versions': []}
+            # Add version if not already present
+            for version in pkg['versions']:
+              if version not in packages_dict[pkg['name']]['versions']:
+                packages_dict[pkg['name']]['versions'].append(version)
+          
+          # Sort versions (treating them as semantic versions)
+          from packaging import version as pkg_version
+          for pkg_name in packages_dict:
+            try:
+              packages_dict[pkg_name]['versions'].sort(key=lambda x: pkg_version.parse(x), reverse=True)
+            except:
+              # Fallback to string sort if parsing fails
+              packages_dict[pkg_name]['versions'].sort(reverse=True)
+          
+          # Convert back to sorted list
+          result = {'packages': sorted(packages_dict.values(), key=lambda x: x['name'])}
+          
+          with open('repo/packages.json', 'w') as f:
+            json.dump(result, f, indent=2)
+          PYTHON_SCRIPT
+          
+          cat repo/packages.json
+
+      - name: Copy web interface to repository
+        run: |
+          set -euo pipefail
+          
+          echo "Copying web interface files..."
+          
+          # Copy all files from wwwroot to repo (except existing packages)
+          for file in wwwroot/*; do
+            if [ -f "$file" ]; then
+              cp "$file" repo/
+              echo "Copied $(basename "$file")"
+            fi
+          done
 
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v1

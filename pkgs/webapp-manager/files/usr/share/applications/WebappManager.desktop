@@ -1,0 +1,15 @@
+[Desktop Entry]
+Version=1.0
+
+Name=Webapp Manager
+Name[fr]=Gestionnaire d'applications Web
+
+Comment=Run websites as if they were installed apps.
+Comment[fr]=Exécutez les sites web comme s'il s'agissait d'applications installées.
+
+Exec=python3 /usr/lib/WebappManager/WebappManager.py
+Path=/usr/lib/WebappManager/
+Icon=/usr/lib/WebappManager/WebappManager.svg
+Terminal=false
+Type=Application
+Categories=Application;Network;

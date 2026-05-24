@@ -113,16 +113,18 @@ jobs:
               --license "$pkg_license"
               -p "$rpm_out"
               -C "$pkgdir/files"
-              .
             )
 
-            # Add dependencies if specified
+            # Add dependencies if specified (before positional argument)
             if [ -n "$pkg_depends" ]; then
               # Handle comma-separated or space-separated dependencies
               for dep in $(echo "$pkg_depends" | tr ',' '\n' | tr ' ' '\n' | grep .); do
                 fpm_args+=(-d "$dep")
               done
             fi
+
+            # Add positional argument last
+            fpm_args+=(.)
 
             fpm "${fpm_args[@]}"
           done

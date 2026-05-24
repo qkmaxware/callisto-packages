@@ -101,6 +101,7 @@ jobs:
             rpm_out="output/${pkgname}-${pkg_version}.rpm"
             
             # Build fpm command with base options
+            # Note: All flags must come before positional arguments
             fpm_args=(
               -s dir -t rpm
               -n "$pkgname"
@@ -110,9 +111,9 @@ jobs:
               --prefix /
               --description "$pkg_description"
               --license "$pkg_license"
+              -p "$rpm_out"
               -C "$pkgdir/files"
               .
-              -p "$rpm_out"
             )
 
             # Add dependencies if specified

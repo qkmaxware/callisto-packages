@@ -148,75 +148,67 @@ jobs:
         run: |
           set -euo pipefail
           
-          # Create packages.json from all RPMs
+          # Create packages.json from all RPMs using proper metadata extraction
           echo "Generating packages.json manifest..."
           
-          # Initialize JSON array
-          echo "{\"packages\": [" > repo/packages.json
-          
-          first=true
-          for rpm_file in repo/*.rpm; do
-            if [ ! -f "$rpm_file" ]; then
-              continue
-            fi
-            
-            # Extract package name and version from filename
-            # Format: name-version.rpm
-            filename="$(basename "$rpm_file" .rpm)"
-            
-            # Find the last dash which separates name from version
-            # This handles package names with dashes
-            pkg_name="${filename%-*}"
-            pkg_version="${filename##*-}"
-            
-            # Add comma before appending (skip for first item)
-            if [ "$first" = false ]; then
-              echo "," >> repo/packages.json
-            fi
-            first=false
-            
-            # Check if this package already exists in the JSON
-            echo -n "  {\"name\": \"$pkg_name\", \"versions\": [\"$pkg_version\"]}" >> repo/packages.json
-          done
-          
-          # Close JSON array
-          echo "" >> repo/packages.json
-          echo "]}" >> repo/packages.json
-          
-          # Merge duplicate packages and consolidate versions
+          # Create a temporary Python script to generate the manifest
           python3 << 'PYTHON_SCRIPT'
           import json
+          import subprocess
+          import glob
+          from pathlib import Path
+          from packaging import version as pkg_version
           
-          with open('repo/packages.json', 'r') as f:
-            data = json.load(f)
-          
-          # Consolidate packages with same name
           packages_dict = {}
-          for pkg in data['packages']:
-            if pkg['name'] not in packages_dict:
-              packages_dict[pkg['name']] = {'name': pkg['name'], 'versions': []}
-            # Add version if not already present
-            for version in pkg['versions']:
-              if version not in packages_dict[pkg['name']]['versions']:
-                packages_dict[pkg['name']]['versions'].append(version)
+          
+          # Extract package info from RPM metadata (not filename)
+          for rpm_file in glob.glob('repo/*.rpm'):
+              try:
+                  # Use rpm command to query package name and version
+                  # This is reliable even with dashes in package names
+                  result = subprocess.run(
+                      ['rpm', '-qp', '--queryformat', '%{NAME}|%{VERSION}', rpm_file],
+                      capture_output=True,
+                      text=True,
+                      check=True
+                  )
+                  
+                  pkg_name, pkg_version_str = result.stdout.strip().split('|')
+                  
+                  if pkg_name not in packages_dict:
+                      packages_dict[pkg_name] = {'name': pkg_name, 'versions': []}
+                  
+                  # Add version if not already present
+                  if pkg_version_str not in packages_dict[pkg_name]['versions']:
+                      packages_dict[pkg_name]['versions'].append(pkg_version_str)
+                  
+                  print(f"Found: {pkg_name} v{pkg_version_str}")
+              except subprocess.CalledProcessError as e:
+                  print(f"Warning: Could not query {rpm_file}: {e}")
+              except Exception as e:
+                  print(f"Error processing {rpm_file}: {e}")
           
           # Sort versions (treating them as semantic versions)
-          from packaging import version as pkg_version
           for pkg_name in packages_dict:
-            try:
-              packages_dict[pkg_name]['versions'].sort(key=lambda x: pkg_version.parse(x), reverse=True)
-            except:
-              # Fallback to string sort if parsing fails
-              packages_dict[pkg_name]['versions'].sort(reverse=True)
+              try:
+                  packages_dict[pkg_name]['versions'].sort(
+                      key=lambda x: pkg_version.parse(x), 
+                      reverse=True
+                  )
+              except Exception:
+                  # Fallback to string sort if parsing fails
+                  packages_dict[pkg_name]['versions'].sort(reverse=True)
           
-          # Convert back to sorted list
+          # Convert to sorted list
           result = {'packages': sorted(packages_dict.values(), key=lambda x: x['name'])}
           
+          # Write packages.json
           with open('repo/packages.json', 'w') as f:
-            json.dump(result, f, indent=2)
-          PYTHON_SCRIPT
+              json.dump(result, f, indent=2)
           
-          cat repo/packages.json
+          print("\nGenerated packages.json:")
+          print(json.dumps(result, indent=2))
+          PYTHON_SCRIPT
 
       - name: Copy web interface to repository
         run: |

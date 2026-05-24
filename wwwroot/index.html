@@ -281,7 +281,8 @@ gpgcheck=0</pre>
                 if (!response.ok) {
                     throw new Error('Failed to load packages');
                 }
-                var pkgs = await response.json().packages;
+                var json = await response.json();
+                var pkgs = json.packages;
                 if(Array.isArray(pkgs) && pkgs.length > 0){
                     packagesData = pkgs;
                 }

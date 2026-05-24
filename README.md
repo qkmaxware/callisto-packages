@@ -4,6 +4,7 @@ This repository serves as an automated rpm package repository for customized pac
 # Structure
 - .github
   - workflows
-    - publish.yml // Publish all Packages to github pages
+    - publish.yml   // Publish all Packages to github pages
 - pkgs
-  - ... // Subdirectories for each package.
+  - ...             // Subdirectories for each package.
+- wwwroot           // Website for package browsing

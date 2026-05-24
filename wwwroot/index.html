@@ -198,6 +198,30 @@
         <div class="results-container hidden" id="resultsContainer">
             <div id="results"></div>
         </div>
+
+        <div style="background: #36393e; padding: 30px; border-radius: 10px; margin-top: 30px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);">
+            <h2 style="margin-bottom: 15px; font-size: 1.3em;">Adding this Repository to Fedora</h2>
+            <p style="margin-bottom: 15px; color: #ddd;">To use this RPM repository on your Fedora system, add it using the following command:</p>
+            <div style="background: #282b30; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 3px solid rgb(42, 127, 254); overflow-x: auto;">
+                <code style="font-family: 'Courier New', monospace; color: #bbb; white-space: pre-wrap; word-break: break-all;">sudo dnf config-manager --add-repo https://qkmaxware.github.io/callisto-packages/rpm</code>
+            </div>
+            <p style="margin-bottom: 15px; color: #ddd;">Or, manually create a repository configuration file:</p>
+            <div style="background: #282b30; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 3px solid rgb(42, 127, 254); overflow-x: auto;">
+                <code style="font-family: 'Courier New', monospace; color: #bbb; white-space: pre-wrap; word-break: break-all;">sudo nano /etc/yum.repos.d/callisto.repo</code>
+            </div>
+            <p style="margin-bottom: 15px; color: #ddd;">Add the following content:</p>
+            <div style="background: #282b30; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 3px solid rgb(42, 127, 254); overflow-x: auto;">
+                <pre style="color: #bbb; margin: 0; white-space: pre-wrap; word-break: break-all;">[callisto]
+name=Callisto RPM Repository
+baseurl=https://qkmaxware.github.io/callisto-packages/rpm
+enabled=1
+gpgcheck=0</pre>
+            </div>
+            <p style="margin-bottom: 15px; color: #ddd;">Then install packages with:</p>
+            <div style="background: #282b30; padding: 15px; border-radius: 5px; border-left: 3px solid rgb(42, 127, 254); overflow-x: auto;">
+                <code style="font-family: 'Courier New', monospace; color: #bbb; white-space: pre-wrap; word-break: break-all;">sudo dnf install package-name</code>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -231,6 +255,25 @@
             resultsContainer.classList.remove('hidden');
         }
 
+        function copyElement(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = '✓ Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            }).catch(() => {
+                alert('Failed to copy. Please copy manually.');
+            });
+        }
+
         // Load packages.json on page load
         async function loadPackages() {
             try {
@@ -238,7 +281,13 @@
                 if (!response.ok) {
                     throw new Error('Failed to load packages');
                 }
-                packagesData = await response.json();
+                var pkgs = await response.json().packages;
+                if(Array.isArray(pkgs) && pkgs.length > 0){
+                    packagesData = pkgs;
+                }
+                else {
+                    throw new Error('No packages found in the repository');
+                }
             } catch (error) {
                 console.error('Error loading packages:', error);
                 results.innerHTML = `<div class="error">Failed to load package repository. Please try again later.</div>`;

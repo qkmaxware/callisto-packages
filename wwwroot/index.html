@@ -203,7 +203,7 @@
             <h2 style="margin-bottom: 15px; font-size: 1.3em;">Adding this Repository to Fedora</h2>
             <p style="margin-bottom: 15px; color: #ddd;">To use this RPM repository on your Fedora system, add it using the following command:</p>
             <div style="background: #282b30; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 3px solid rgb(42, 127, 254); overflow-x: auto;">
-                <code style="font-family: 'Courier New', monospace; color: #bbb; white-space: pre-wrap; word-break: break-all;">sudo dnf config-manager --add-repo https://qkmaxware.github.io/callisto-packages/rpm</code>
+                <code style="font-family: 'Courier New', monospace; color: #bbb; white-space: pre-wrap; word-break: break-all;">sudo dnf config-manager addrepo --from-repofile=https://qkmaxware.github.io/callisto-packages/callisto.repo</code>
             </div>
             <p style="margin-bottom: 15px; color: #ddd;">Or, manually create a repository configuration file:</p>
             <div style="background: #282b30; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 3px solid rgb(42, 127, 254); overflow-x: auto;">

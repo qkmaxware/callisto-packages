@@ -1,5 +1,5 @@
 [callisto]
 name=Callisto RPM Repository
-baseurl=https://qkmaxware.github.io/callisto-packages/rpm
+baseurl=https://qkmaxware.github.io/callisto-packages/
 enabled=1
 gpgcheck=0

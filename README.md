@@ -35,7 +35,7 @@ Includes:
 Iconography for Callisto OS. Applications launcher icon, OS release icon, etc. 
 
 ### callisto-theme-icons
-A modified version of the Telu icon theme created by vinceliuice (https://github.com/vinceliuice) and modified slightly for use with Callisto OS
+A version of the Tela icon theme created by vinceliuice (https://github.com/vinceliuice) and modified slightly for use with Callisto OS. See [CHANGELOG](pkgs/callisto-theme-icons/CHANGELOG) for details as to the exact modifications taken. 
 
 ### callisto-theme-sddm
 An SDDM theme for Callisto OS.

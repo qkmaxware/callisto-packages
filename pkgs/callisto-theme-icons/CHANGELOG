@@ -1,0 +1,13 @@
+# Changelog
+
+The Tela icon theme was originally designed by [vinceliuice](https://github.com/vinceliuice).
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+
+## [Unreleased]
+
+### Added
+
+- Iconography specific to Callisto OS's branding specifically replacement of the start-here.svg icon

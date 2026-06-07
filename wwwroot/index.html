@@ -285,6 +285,7 @@ gpgcheck=0</pre>
                 var pkgs = json.packages;
                 if(Array.isArray(pkgs) && pkgs.length > 0){
                     packagesData = pkgs;
+                    searchInput.placeholder = `Search ${packagesData.length} packages...`;
                 }
                 else {
                     throw new Error('No packages found in the repository');

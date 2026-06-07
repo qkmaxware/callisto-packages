@@ -6,8 +6,20 @@ git clone --depth 1 https://github.com/vinceliuice/Tela-icon-theme.git
 echo "Cleaning up temporary files..."
 rm -rf Tela-icon-theme                                              # Remove the cloned repository after installation
 rm -rf "files/usr/share/icons/Tela (Callisto)/icon-theme.cache"     # Remove the cache as its generated on the target system
-rm -rf "files/usr/share/icons/Tela (Callisto)/scalable@2x"          # Remove the scalable@2x symbolic link
-ln -s "/usr/share/icons/Tela (Callisto)/scalable" "files/usr/share/icons/Tela (Callisto)/scalable@2x"    # Create a new symbolic link for scalable@2x pointing to scalable
+
+# Fix all symbolic links to point to the correct location in the package files directory
+rm -rf "files/usr/share/icons/Tela (Callisto)/scalable@2x"      
+rm -rf "files/usr/share/icons/Tela (Callisto)/16@2x"      
+rm -rf "files/usr/share/icons/Tela (Callisto)/22@2x"      
+rm -rf "files/usr/share/icons/Tela (Callisto)/24@2x"      
+rm -rf "files/usr/share/icons/Tela (Callisto)/32@2x"      
+
+ln -s "/usr/share/icons/Tela (Callisto)/scalable" "files/usr/share/icons/Tela (Callisto)/scalable@2x"  
+ln -s "/usr/share/icons/Tela (Callisto)/16" "files/usr/share/icons/Tela (Callisto)/16@2x"  
+ln -s "/usr/share/icons/Tela (Callisto)/22" "files/usr/share/icons/Tela (Callisto)/22@2x"  
+ln -s "/usr/share/icons/Tela (Callisto)/24" "files/usr/share/icons/Tela (Callisto)/24@2x"  
+ln -s "/usr/share/icons/Tela (Callisto)/32" "files/usr/share/icons/Tela (Callisto)/32@2x"  
+
 ls -al "files/usr/share/icons/Tela (Callisto)"
 
 # Customize the icons for Callisto OS

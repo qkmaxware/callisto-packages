@@ -1,0 +1,27 @@
+[kcminputrc][Mouse]
+cursorTheme=breeze_cursors
+
+[kdeglobals][General]
+ColorScheme=DarklyCallisto
+
+[kdeglobals][Icons]
+Theme=Tela (Callisto)-dark
+
+[kdeglobals][KDE]
+widgetStyle=Darkly
+
+[kwinrc][DesktopSwitcher]
+LayoutName=org.kde.breeze.desktop
+
+[kwinrc][WindowSwitcher]
+LayoutName=org.kde.breeze.desktop
+
+[kwinrc][org.kde.kdecoration2]
+library=org.kde.darkly
+theme=Darkly
+
+[plasmarc][Theme]
+name=darkly
+
+[KSplash]
+Theme=Callisto

@@ -21,7 +21,7 @@ jobs:
       - name: Install packaging tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y git jq rpm ruby ruby-dev build-essential createrepo-c python3-pip
+          sudo apt-get install -y git jq ImageMagick rpm ruby ruby-dev build-essential createrepo-c python3-pip
           sudo gem install --no-document fpm
           pip3 install --quiet packaging
 

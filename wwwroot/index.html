@@ -257,14 +257,11 @@ gpgcheck=0</pre>
                 {
                     "name": "callisto-backgrounds",
                     "version": "1.0.0",
+                    "fmts": ["rpm"],
                     "cpu": ["noarch"],
                     "tags": ["tag1", "tag2"],
                     "description": "description",
-                    "files": {
-                        "rpm": [
-                            "rpm/file1.rpm"
-                        ]
-                    }
+                    "files": ["rpm/file1.rpm"]
                 },
                 {
                     "name": "callisto-icons",
@@ -362,16 +359,27 @@ gpgcheck=0</pre>
                 return;
             }
 
-            results.innerHTML = packages.map(pkg => `
-                <div class="package-item">
+            results.innerHTML = packages.map(pkg => {
+                var files_per_format = {};
+                for (fmt of (pkg.fmts || [])) {
+                    var files = []
+                    for (var file of (pkg.files || [])) {
+                        if (file.endsWith(fmt)) {
+                            files.push(file)
+                        }
+                    }
+                    files_per_format[fmt] = files
+                }
+                console.log(files_per_format);
+                return `<div class="package-item">
                     <div class="package-name">${pkg.name}</div>
                     <div class="package-version">${pkg.version}</div>
                     <p class="package-description">
                         ${pkg.description}
                     </p>
                     <div class="tag-set">
-                        ${(Object.keys(pkg.files || {})).map(key => 
-                            `<a class="tag fmt" href="${pkg.files[key][0]}">${key}</a>`
+                        ${(pkg.fmts || []).map(fmt => 
+                            `<a class="tag fmt" href="${files_per_format[fmt] && files_per_format[fmt].length > 0 ? files_per_format[fmt][0]: "#"}">${fmt}</a>`
                         ).join('')}
                         ${(pkg.cpu || []).map(version => 
                             `<span class="tag arch">${version}</span>`
@@ -381,7 +389,7 @@ gpgcheck=0</pre>
                         ).join('')}
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         // Event listeners

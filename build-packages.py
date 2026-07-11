@@ -54,7 +54,7 @@ class PackageMetadata:
     tags: list[str] | None = []
     scripts: PackageScripts = PackageScripts()
 
-    files: dict[str, list[str]] = {}
+    files: list[str] | None = None
     
     def __init__(self):
         pass
@@ -192,10 +192,11 @@ class PackageBuilder:
 
         # Build package for each architecture supported
         built_cps = []
+        built_files = []
+        
         for arch in metadata.cpu:
             built_any = False
             built_all = True
-            built_files_for_arch = []
             for fmt in metadata.fmts:
                 # Ensure the format folder exists
                 output_dir_package = output_dir / fmt   # IE output/rpm or output/deb
@@ -238,13 +239,13 @@ class PackageBuilder:
                 built_all &= didBuild
                 if didBuild:
                     built_any = True
-                    built_files_for_arch.append(f"{fmt}/{output_filename}")
+                    built_files.append(f"{fmt}/{output_filename}")
             
             if built_any:
                 built_cps.append(arch)
-                metadata.files[arch] = built_files_for_arch
 
         metadata.cpu = built_cps                # overwrite the supported architectures with those that actually built successfully
+        metadata.files = built_files            # record a list of all the generated files for the packages.json index to know about
         return metadata
 
     def build_all(self, root_dir: Path, output_dir: Path) -> None:  

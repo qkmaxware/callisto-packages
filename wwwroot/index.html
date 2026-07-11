@@ -364,13 +364,12 @@ gpgcheck=0</pre>
                 for (fmt of (pkg.fmts || [])) {
                     var files = []
                     for (var file of (pkg.files || [])) {
-                        if (file.endsWith(fmt)) {
+                        if (file.startsWith(fmt)) {
                             files.push(file)
                         }
                     }
                     files_per_format[fmt] = files
                 }
-                console.log(files_per_format);
                 return `<div class="package-item">
                     <div class="package-name">${pkg.name}</div>
                     <div class="package-version">${pkg.version}</div>

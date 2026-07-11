@@ -2,10 +2,8 @@
     "author": "qkmaxware",
     "version": "1.0.0",
     "license": "MIT",
-    "description": "Meta-package for Callisto OS theme, including branding, colours, style and icons",
+    "description": "Callisto OS base theming for KDE Plasma, including branding, colours, style and icons",
     "dependencies": {
-        "callisto-logos": "*",
-        "callisto-theme-sddm": "*",
-        "callisto-theme-colour-scheme": "*"
+        "callisto-logos": "*"
     }
 }

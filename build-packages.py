@@ -159,7 +159,7 @@ class PackageBuilder:
                 subprocess.run(["chmod", "+x", str(shell_script_path)], check=True)
 
             shell = "bash" if shutil.which("bash") else "sh"
-            subprocess.run([shell, str(shell_script_path)], cwd=package_dir, check=True)
+            subprocess.run([shell, "build.sh"], cwd=package_dir, check=True)
 
         python_script_path = package_dir / "build.py"
         if python_script_path.exists():

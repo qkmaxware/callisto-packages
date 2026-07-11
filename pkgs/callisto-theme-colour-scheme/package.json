@@ -1,0 +1,9 @@
+{
+    "author": "qkmaxware",
+    "version": "1.0.0",
+    "license": "MIT",
+    "description": "Colour scheme for the Darkly style used in Callisto OS",
+    "dependencies": {
+        "darkly": "*"
+    }
+}

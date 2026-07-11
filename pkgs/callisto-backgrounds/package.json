@@ -1,0 +1,8 @@
+{
+    "author": "qkmaxware",
+    "version": "1.0.0",
+    "license": "MIT",
+    "description": "A collection of high-quality wallpapers for Callisto OS",
+    "os": [ "noarch" ],
+    "dependencies": {}
+}

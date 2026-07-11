@@ -1,0 +1,9 @@
+{
+    "author": "qkmaxware",
+    "version": "1.0.0",
+    "license": "MIT",
+    "description": "Web App Manager for Callisto OS",
+    "dependencies": {
+        "python-pyside6": "*"
+    }
+}

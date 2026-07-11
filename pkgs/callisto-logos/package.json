@@ -3,7 +3,8 @@
     "version": "1.0.0",
     "license": "MIT",
     "description": "OS Icons for Callisto OS",
+    "os": [ "noarch" ],
     "dependencies": {},
     "provides": ["system-logos", "fedora-logos"],
-    "replaces": ["fedora-logos"]
+    "replaces": []
 }

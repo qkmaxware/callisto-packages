@@ -152,7 +152,6 @@
 
         .tag {
             background-color: #484b50;
-            background: rgb(42, 127, 254);
             color: white;
             padding: 4px 12px;
             border-radius: 20px;
@@ -166,6 +165,8 @@
 
         .tag.fmt {
             background: rgb(184, 22, 16);
+            text-decoration: none;
+            cursor: pointer;
         }
 
         .empty-state {
@@ -258,7 +259,12 @@ gpgcheck=0</pre>
                     "version": "1.0.0",
                     "cpu": ["noarch"],
                     "tags": ["tag1", "tag2"],
-                    "description": "description"
+                    "description": "description",
+                    "files": {
+                        "rpm": [
+                            "rpm/file1.rpm"
+                        ]
+                    }
                 },
                 {
                     "name": "callisto-icons",
@@ -364,8 +370,8 @@ gpgcheck=0</pre>
                         ${pkg.description}
                     </p>
                     <div class="tag-set">
-                        ${(pkg.fmts || []).map(f => 
-                            `<span class="tag fmt">${f}</span>`
+                        ${(Object.keys(pkg.files || {})).map(key => 
+                            `<a class="tag fmt" href="${pkg.files[key][0]}">${key}</a>`
                         ).join('')}
                         ${(pkg.cpu || []).map(version => 
                             `<span class="tag arch">${version}</span>`

@@ -1,6 +1,8 @@
 import json
+import os
 import platform
 import shlex
+import shutil
 import subprocess
 import sys
 from typing import Self
@@ -153,8 +155,11 @@ class PackageBuilder:
         shell_script_path = package_dir / "build.sh"
         if shell_script_path.exists():
             print(f"> Running build.sh script")
-            subprocess.run(["chmod", "+x", str(shell_script_path)], check=True)
-            subprocess.run(["./build.sh"], cwd=package_dir, check=True)
+            if os.name != "nt":
+                subprocess.run(["chmod", "+x", str(shell_script_path)], check=True)
+
+            shell = "bash" if shutil.which("bash") else "sh"
+            subprocess.run([shell, str(shell_script_path)], cwd=package_dir, check=True)
 
         python_script_path = package_dir / "build.py"
         if python_script_path.exists():

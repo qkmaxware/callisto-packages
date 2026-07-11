@@ -27,6 +27,7 @@ class DEFAULTS:
     LICENSE = "MIT"
     AUTHOR = "GitHub Actions"
     ARCHITECTURE = ARCH_MAP.get(platform.machine(), platform.machine()) # ie: x86_64 or "native"
+    FORMAT = "rpm"
 
 class PackageScripts:
     before_install: str | None
@@ -39,9 +40,12 @@ class PackageMetadata:
     name: str
     version: str = DEFAULTS.VERSION
     cpu: list[str] = [ DEFAULTS.ARCHITECTURE ]
+    fmts: list[str] = [ DEFAULTS.FORMAT ]
     description: str = ""
     license: str = DEFAULTS.LICENSE
     author: str = DEFAULTS.AUTHOR
+    vendor: str = DEFAULTS.AUTHOR
+    iteration: int = 1
 
     dependencies: list[str] | None
     provides: list[str] | None
@@ -49,6 +53,8 @@ class PackageMetadata:
 
     tags: list[str] | None = []
     scripts: PackageScripts = PackageScripts()
+
+    generated_files: list[str] | None = None
     
     def __init__(self):
         pass
@@ -82,10 +88,12 @@ class PackageMetadata:
 
         metadata.name = data.get("name", metadata.name)
         metadata.cpu = as_list(data.get("cpu", metadata.cpu))
+        metadata.fmts = as_list(data.get("os"), metadata.fmts)
         metadata.version = data.get("version", metadata.version)
         metadata.description = data.get("description", metadata.description)
         metadata.license = data.get("license", metadata.license)
         metadata.author = data.get("author", metadata.author)
+        metadata.vendor = data.get("vendor", metadata.author)
         metadata.tags = as_list(data.get("keywords", metadata.tags))
 
         metadata.scripts.before_install = data.get("scripts", {}).get("before-install", None)
@@ -181,48 +189,63 @@ class PackageBuilder:
         if not files_dir.is_dir():
             print(f"> SKIPPED: No files to package")
             return None
-        
-        output_path = output_dir / f"{metadata.name}-{metadata.version}.rpm"
 
         # Build package for each architecture supported
         built_cps = []
+        built_files = []
+        
         for arch in metadata.cpu:
-            # Configure FPM arguments
-            builder = FPMBuilder("rpm")
-            builder.source(files_dir)
-            builder.output(output_path)
-            builder.add_option("-n", metadata.name)
-            builder.add_option("-v", metadata.version)
-            builder.add_option("-a", arch)
-            builder.add_option("--iteration", 1)
-            builder.add_option("--rpm-os", "linux")
-            builder.add_option("--prefix", "/")
-            builder.add_option("--description", metadata.description)
-            builder.add_option("--license", metadata.license)
-            builder.add_option("--maintainer", metadata.author)
-            builder.add_option("--vendor", metadata.author)
+            built_any = False
+            built_all = True
+            for fmt in metadata.fmts:
+                # Ensure the format folder exists
+                output_dir_package = output_dir / fmt   # IE output/rpm or output/deb
+                output_dir_package.mkdir(exist_ok=True)
+                output_filename = f"{metadata.name}-{metadata.version}-{str(metadata.iteration)}.{arch}.{fmt}"
+                output_path = output_dir_package / output_filename
 
-            if (metadata.scripts.before_install):
-                builder.add_option("--before-install", metadata.scripts.before_install)
-            if (metadata.scripts.after_install):
-                builder.add_option("--after-install", metadata.scripts.after_install)
-            if (metadata.scripts.before_remove):
-                builder.add_option("--before-remove", metadata.scripts.before_remove)
-            if (metadata.scripts.after_remove):
-                builder.add_option("--after-remove", metadata.scripts.after_remove)
+                # Configure FPM arguments
+                builder = FPMBuilder(fmt)
+                builder.source(files_dir)
+                builder.output(output_path)
+                builder.add_option("-n", metadata.name)
+                builder.add_option("-v", metadata.version)
+                builder.add_option("-a", arch)
+                builder.add_option("--iteration", metadata.iteration)
+                builder.add_option("--rpm-os", "linux")
+                builder.add_option("--prefix", "/")
+                builder.add_option("--description", metadata.description)
+                builder.add_option("--license", metadata.license)
+                builder.add_option("--maintainer", metadata.author)
+                builder.add_option("--vendor", metadata.vendor)
 
-            builder.add_dependencies(metadata.dependencies)
-            builder.add_provides(metadata.provides)
-            builder.add_replaces(metadata.replaces)
+                if (metadata.scripts.before_install):
+                    builder.add_option("--before-install", metadata.scripts.before_install)
+                if (metadata.scripts.after_install):
+                    builder.add_option("--after-install", metadata.scripts.after_install)
+                if (metadata.scripts.before_remove):
+                    builder.add_option("--before-remove", metadata.scripts.before_remove)
+                if (metadata.scripts.after_remove):
+                    builder.add_option("--after-remove", metadata.scripts.after_remove)
 
-            builder.add_arg(".")
+                builder.add_dependencies(metadata.dependencies)
+                builder.add_provides(metadata.provides)
+                builder.add_replaces(metadata.replaces)
 
-            # Build the package
-            didBuild = builder.build()
-            if didBuild:
+                builder.add_arg(".")
+
+                # Build the package
+                didBuild = builder.build()
+                built_all &= didBuild
+                if didBuild:
+                    built_any = True
+                    built_files.append(f"{fmt}/{output_filename}")
+            
+            if built_any:
                 built_cps.append(arch)
 
-        metadata.cpu = built_cps # overwrite the supported architectures with those that actually built successfully
+        metadata.cpu = built_cps                # overwrite the supported architectures with those that actually built successfully
+        metadata.generated_files = built_files  # record a list of all the generated files
         return metadata
 
     def build_all(self, root_dir: Path, output_dir: Path) -> None:  
@@ -246,9 +269,6 @@ class PackageBuilder:
         with open("packages.json", 'w') as file:
             file.write(json.dumps({ "packages": index }, indent=2))
 
-        if not any(output_dir.glob("*.rpm")):
-            raise SystemExit("No RPM packages were created")
-
 if __name__ == "__main__":
     builder = PackageBuilder()
-    builder.build_all(Path("pkgs"), Path("output/rpm"))
+    builder.build_all(Path("pkgs"), Path("output"))

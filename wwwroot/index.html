@@ -151,6 +151,7 @@
         }
 
         .tag {
+            background-color: #484b50;
             background: rgb(42, 127, 254);
             color: white;
             padding: 4px 12px;
@@ -159,8 +160,12 @@
             font-family: monospace;
         }
 
-        .tag.minor {
-            background-color: #484b50;
+        .tag.arch {
+            background: rgb(42, 127, 254);
+        }
+
+        .tag.fmt {
+            background: rgb(184, 22, 16);
         }
 
         .empty-state {
@@ -359,11 +364,14 @@ gpgcheck=0</pre>
                         ${pkg.description}
                     </p>
                     <div class="tag-set">
+                        ${(pkg.fmts || []).map(f => 
+                            `<span class="tag fmt">${f}</span>`
+                        ).join('')}
                         ${(pkg.cpu || []).map(version => 
-                            `<span class="tag">${version}</span>`
+                            `<span class="tag arch">${version}</span>`
                         ).join('')}
                         ${(pkg.tags || []).map(tag => 
-                            `<span class="tag minor">${tag}</span>`
+                            `<span class="tag">${tag}</span>`
                         ).join('')}
                     </div>
                 </div>

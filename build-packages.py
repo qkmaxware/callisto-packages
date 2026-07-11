@@ -3,6 +3,7 @@ import platform
 import shlex
 import subprocess
 import sys
+from typing import Self
 from dataclasses import dataclass
 from pathlib import Path
 from itertools import chain
@@ -51,7 +52,7 @@ class PackageMetadata:
         pass
 
     @staticmethod
-    def load(package_dir: Path) -> PackageMetadata | None:
+    def load(package_dir: Path) -> Self | None:
         full_path = package_dir / "package.json"
         if not full_path.exists():
             return None

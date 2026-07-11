@@ -88,7 +88,7 @@ class PackageMetadata:
 
         metadata.name = data.get("name", metadata.name)
         metadata.cpu = as_list(data.get("cpu", metadata.cpu))
-        metadata.fmts = as_list(data.get("os"), metadata.fmts)
+        metadata.fmts = as_list(data.get("os", metadata.fmts))
         metadata.version = data.get("version", metadata.version)
         metadata.description = data.get("description", metadata.description)
         metadata.license = data.get("license", metadata.license)

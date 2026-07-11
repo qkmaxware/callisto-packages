@@ -3,5 +3,6 @@
     "version": "1.0.0",
     "license": "MIT",
     "description": "Simple console utility to reset configuration of your home directory to default values from /etc/skel.",
+    "cpu": [ "noarch" ],
     "dependencies": {}
 }

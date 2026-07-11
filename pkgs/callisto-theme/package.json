@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "license": "MIT",
     "description": "Callisto OS base theming for KDE Plasma, including branding, colours, style and icons",
+    "cpu": [ "noarch" ],
     "dependencies": {
         "callisto-logos": "*"
     }

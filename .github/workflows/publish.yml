@@ -38,6 +38,8 @@ jobs:
           python3 build-packages.py
 
       - name: Create RPM Repository
+        env:
+          GPG_KEY_PIN: ${{ secrets.GPG_KEY_PIN }}
         run: |
           set -euo pipefail
           

@@ -109,9 +109,11 @@ class PackageMetadata:
     
 
 class FPMBuilder:
+    _kind: str
     _args: list[list[str]]
 
     def __init__(self, type: str):
+        self._kind = type
         self._args = [
             ["fpm"],
             ["-s", "dir"],
@@ -148,7 +150,7 @@ class FPMBuilder:
     def build(self) -> bool:
         try:
             args = list(chain.from_iterable(self._args))
-            print("> Building RPM package: " + shlex.join(args))
+            print(f"> Building {self._kind} package: " + shlex.join(args))
             subprocess.run(args, check=True)
             return True
         except:

@@ -48,9 +48,28 @@ jobs:
 
           echo "Repository contains $(find repo/rpm -name '*.rpm' | wc -l) total packages"
           
+          GPG_KEY_ID=$(gpg --batch --with-colons --list-secret-keys | awk -F: '/^sec/ {print $5; exit}')
+
+          echo "Signing rpm packages with key: $GPG_KEY_ID..."
+          cat > ~/.rpmmacros <<EOF
+          %_signature gpg
+          %_gpg_name $GPG_KEY_ID
+          %__gpg /usr/bin/gpg
+          EOF
+          find repo/rpm -name '*.rpm' -print0 | while IFS= read -r -d '' rpm; do
+            echo "Signing $rpm"
+
+            rpmsign \
+              --addsign "$rpm" \
+              --define "__gpg_sign_cmd /usr/bin/gpg --batch --no-tty --pinentry-mode loopback --passphrase $GPG_KEY_PIN -u $GPG_KEY_ID -sbo %{__signature_filename} %{__plaintext_filename}"
+          done
+
           # Regenerate repository metadata with all packages (old and new)
           echo "Regenerating repository metadata..."
           createrepo_c --update repo/rpm
+
+          echo "Signing rpm repository with key: $GPG_KEY_ID..."
+          gpg --batch --yes --pinentry-mode loopback --passphrase "$GPG_KEY_PIN" --local-user "$GPG_KEY_ID" --armor --detach-sign --output repo/rpm/repodata/repomd.xml.asc repo/rpm/repodata/repomd.xml
 
       - name: Create DEB repository
         env:

@@ -53,10 +53,10 @@ jobs:
           GPG_KEY_ID=$(gpg --batch --with-colons --list-secret-keys | awk -F: '/^sec/ {print $5; exit}')
 
           echo "Signing rpm packages with key: $GPG_KEY_ID..."
-          export GNUPGHOME="$(mktemp -d)"
-          chmod 700 "$GNUPGHOME"
+          mkdir -p ~/.gnupg
+          chmod 700 ~/.gnupg
 
-          cat > "$GNUPGHOME/gpg-agent.conf" <<EOF
+          cat > ~/.gnupg/gpg-agent.conf <<EOF
           allow-loopback-pinentry
           EOF
 

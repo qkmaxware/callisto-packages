@@ -26,8 +26,10 @@ jobs:
           pip3 install --quiet packaging
 
       - name: Import GPG key
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
         run: |
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+          echo "$GPG_PRIVATE_KEY" | gpg --batch --import
 
       - name: Build packages
         env:
@@ -51,6 +53,8 @@ jobs:
           createrepo_c --update repo/rpm
 
       - name: Create DEB repository
+        env:
+          GPG_KEY_PIN: ${{ secrets.GPG_KEY_PIN }}
         run: |
           set -euo pipefail
           
@@ -70,12 +74,14 @@ jobs:
 
           GPG_KEY_ID=$(gpg --batch --with-colons --list-secret-keys | awk -F: '/^sec/ {print $5; exit}')
           echo "Signing debian repository with key: $GPG_KEY_ID..."
-          gpg --batch --yes --pinentry-mode loopback --passphrase "${{ secrets.GPG_KEY_PIN }}" --local-user "$GPG_KEY_ID" --armor --detach-sign --output Release.gpg Release
+          gpg --batch --yes --pinentry-mode loopback --passphrase "$GPG_KEY_PIN" --local-user "$GPG_KEY_ID" --armor --detach-sign --output Release.gpg Release
           gpg --verify Release.gpg Release
-          gpg --batch --yes --pinentry-mode loopback --passphrase "${{ secrets.GPG_KEY_PIN }}" --local-user "$GPG_KEY_ID" --clearsign --output InRelease Release
+          gpg --batch --yes --pinentry-mode loopback --passphrase "$GPG_KEY_PIN" --local-user "$GPG_KEY_ID" --clearsign --output InRelease Release
           gpg --verify InRelease
 
       - name: Copy web interface to repository
+        env:
+          GPG_PUBLIC_KEY: ${{ secrets.GPG_PUBLIC_KEY }}
         run: |
           set -euo pipefail
           
@@ -95,7 +101,7 @@ jobs:
 
           echo "Copying public sigining key(s)..."
           mkdir repo/keys
-          echo "${{ secrets.GPG_PUBLIC_KEY }}" > repo/keys/publickey.gpg
+          echo "$GPG_PUBLIC_KEY" > repo/keys/publickey.gpg
           echo "Copied publickey.gpg"
 
       - name: Upload GitHub Pages artifact

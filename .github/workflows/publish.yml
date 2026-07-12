@@ -58,6 +58,7 @@ jobs:
 
           echo "Signing rpm repository with key: $GPG_KEY_ID..."
           gpg --batch --yes --pinentry-mode loopback --passphrase "$GPG_KEY_PIN" --local-user "$GPG_KEY_ID" --armor --detach-sign --output repo/rpm/repodata/repomd.xml.asc repo/rpm/repodata/repomd.xml
+          gpg --verify repo/rpm/repodata/repomd.xml.asc repo/rpm/repodata/repomd.xml
 
       - name: Create DEB repository
         env:

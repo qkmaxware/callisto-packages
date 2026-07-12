@@ -4,5 +4,9 @@
     "license": "MIT",
     "description": "A collection of high-quality wallpapers for Callisto OS",
     "cpu": [ "noarch" ],
+    "os": [
+        "rpm",
+        "deb"
+    ],
     "dependencies": {}
 }

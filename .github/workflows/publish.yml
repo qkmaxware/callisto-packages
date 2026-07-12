@@ -21,51 +21,48 @@ jobs:
       - name: Install packaging tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y git jq imagemagick rpm ruby ruby-dev build-essential createrepo-c python3 python3-pip
+          sudo apt-get install -y git jq imagemagick rpm ruby ruby-dev build-essential createrepo-c apt-utils python3 python3-pip gnupg
           sudo gem install --no-document fpm
           pip3 install --quiet packaging
 
-      - name: Retrieve previous packages
-        continue-on-error: true
-        run: |
-          mkdir -p repo/rpm
-          
-          # Attempt to fetch gh-pages
-          git fetch origin gh-pages 2>/dev/null || exit 0
-          
-          # If gh-pages exists, extract existing RPM files into repo/rpm
-          if git rev-parse --verify gh-pages >/dev/null 2>&1; then
-            echo "Extracting existing RPM packages from gh-pages..."
-            
-            # Use git show to extract .rpm files without full checkout
-            git ls-tree -r --name-only gh-pages | while read -r file; do
-              if [[ "$file" == *.rpm ]]; then
-                mkdir -p "repo/rpm/$(dirname "$file")"
-                git show "gh-pages:$file" > "repo/rpm/$file" 2>/dev/null || true
-              fi
-            done
-            
-            echo "Preserved $(find repo/rpm -name '*.rpm' 2>/dev/null | wc -l) existing packages"
-          fi
-
-      - name: Build RPM packages
+      - name: Build packages
         env:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: | 
           python3 build-packages.py
 
-      - name: Merge and publish RPM packages
+      - name: Create RPM Repository
         run: |
           set -euo pipefail
           
           # Move newly built packages into repo/rpm (merge with existing)
+          echo "Copying packages..."
+          mkdir -p output/rpm repo/rpm
           mv output/rpm/*.rpm repo/rpm/ 2>/dev/null || true
+
+          echo "Repository contains $(find repo/rpm -name '*.rpm' | wc -l) total packages"
           
           # Regenerate repository metadata with all packages (old and new)
           echo "Regenerating repository metadata..."
           createrepo_c --update repo/rpm
+
+      - name: Create DEB repository
+        run: |
+          set -euo pipefail
           
-          echo "Repository contains $(find repo/rpm -name '*.rpm' | wc -l) total packages"
+          # Move newly built packages into repo/rpm (merge with existing)
+          echo "Copying packages..."
+          mkdir -p output/deb repo/deb
+          mv output/deb/*.deb repo/deb/ 2>/dev/null || true
+
+          echo "Repository contains $(find repo/deb -name '*.deb' | wc -l) total packages"
+          
+          # Regenerate repository metadata with all packages (old and new)
+          echo "Regenerating repository metadata..."
+          cd repo/deb
+          apt-ftparchive packages . > Packages
+          gzip -kf Packages
+          apt-ftparchive release . > Release
 
       - name: Copy web interface to repository
         run: |
@@ -83,6 +80,7 @@ jobs:
 
           echo "Copying generated package manifest"
           cp packages.json repo/packages.json
+          echo "Copied packages.json"
 
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v5

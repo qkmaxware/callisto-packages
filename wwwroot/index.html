@@ -51,7 +51,7 @@
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            margin-bottom: 30px;
+            margin-bottom: 15px;
         }
 
         .search-form {
@@ -193,6 +193,54 @@
             color: #667eea;
             font-weight: 500;
         }
+
+        .instruction-box {
+            background: #36393e; 
+            padding: 30px; 
+            border-radius: 10px; 
+            margin-top: 30px; 
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 2rem auto;
+        }
+        .tabs>input[type="radio"] {
+            display: none;
+        }
+        .tabs>label {
+            background-color:#191a1d;
+            user-select: none;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-block;
+            font-weight: 600;
+            margin-right: 0.3rem;
+            order: initial;
+            padding: 1rem 2rem;
+            transition: background ease 0.3s;
+        }
+        .tabs>.tab-content {
+            background-color: #36393e;
+            display: none;
+            padding: 1rem;
+            flex-grow: 1;
+            padding: 1rem;
+            width: 100%;
+            order: 99;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+        /* Display content when a tab is selected */
+        .tabs>input[type="radio"]:checked + label {
+            background-color: #36393e;
+        }
+        .tabs>input[type="radio"]:checked + label + .tab-content {
+            display: block;
+        }
+
     </style>
 </head>
 <body>
@@ -218,28 +266,54 @@
             <div id="results"></div>
         </div>
 
-        <div style="background: #36393e; padding: 30px; border-radius: 10px; margin-top: 30px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);">
-            <h2 style="margin-bottom: 15px; font-size: 1.3em;">Adding this Repository to Fedora</h2>
-            <p style="margin-bottom: 15px; color: #ddd;">To use this RPM repository on your Fedora system, add it using the following command:</p>
-            <div style="background: #282b30; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 3px solid rgb(42, 127, 254); overflow-x: auto;">
-                <code style="font-family: 'Courier New', monospace; color: #bbb; white-space: pre-wrap; word-break: break-all;">sudo dnf config-manager addrepo --from-repofile=https://qkmaxware.github.io/callisto-packages/callisto.repo</code>
-            </div>
-            <p style="margin-bottom: 15px; color: #ddd;">Or, manually create a repository configuration file:</p>
-            <div style="background: #282b30; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 3px solid rgb(42, 127, 254); overflow-x: auto;">
-                <code style="font-family: 'Courier New', monospace; color: #bbb; white-space: pre-wrap; word-break: break-all;">sudo nano /etc/yum.repos.d/callisto.repo</code>
-            </div>
-            <p style="margin-bottom: 15px; color: #ddd;">Add the following content:</p>
-            <div style="background: #282b30; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 3px solid rgb(42, 127, 254); overflow-x: auto;">
-                <pre style="color: #bbb; margin: 0; white-space: pre-wrap; word-break: break-all;">[callisto]
+        <div class="tabs">
+
+            <!-- Tab 1 -->
+            <input type="radio" name="tab" id="tab1" checked>
+            <label for="tab1">Fedora</label>
+            <div class="tab-content" id="content1">
+                <h2 style="margin-bottom: 15px; font-size: 1.3em;">Adding this Repository to Fedora</h2>
+                <p style="margin-bottom: 15px; color: #ddd;">To use this repository on your Fedora system, add it using the following command:</p>
+                <div style="background: #282b30; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 3px solid rgb(42, 127, 254); overflow-x: auto;">
+                    <code style="font-family: 'Courier New', monospace; color: #bbb; white-space: pre-wrap; word-break: break-all;">sudo dnf config-manager addrepo --from-repofile=https://qkmaxware.github.io/callisto-packages/callisto.repo</code>
+                </div>
+                <p style="margin-bottom: 15px; color: #ddd;">Or, manually create a repository configuration file:</p>
+                <div style="background: #282b30; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 3px solid rgb(42, 127, 254); overflow-x: auto;">
+                    <code style="font-family: 'Courier New', monospace; color: #bbb; white-space: pre-wrap; word-break: break-all;">sudo nano /etc/yum.repos.d/callisto.repo</code>
+                </div>
+                <p style="margin-bottom: 15px; color: #ddd;">Add the following content:</p>
+                <div style="background: #282b30; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 3px solid rgb(42, 127, 254); overflow-x: auto;">
+                    <pre style="color: #bbb; margin: 0; white-space: pre-wrap; word-break: break-all;">[callisto]
 name=Callisto RPM Repository
 baseurl=https://qkmaxware.github.io/callisto-packages/rpm
 enabled=1
 gpgcheck=0</pre>
+                </div>
+                <p style="margin-bottom: 15px; color: #ddd;">Then install packages with:</p>
+                <div style="background: #282b30; padding: 15px; border-radius: 5px; border-left: 3px solid rgb(42, 127, 254); overflow-x: auto;">
+                    <code style="font-family: 'Courier New', monospace; color: #bbb; white-space: pre-wrap; word-break: break-all;">sudo dnf install &lt;package-name&gt;</code>
+                </div>
             </div>
-            <p style="margin-bottom: 15px; color: #ddd;">Then install packages with:</p>
-            <div style="background: #282b30; padding: 15px; border-radius: 5px; border-left: 3px solid rgb(42, 127, 254); overflow-x: auto;">
-                <code style="font-family: 'Courier New', monospace; color: #bbb; white-space: pre-wrap; word-break: break-all;">sudo dnf install package-name</code>
+
+            <!-- Tab 2 -->
+            <input type="radio" name="tab" id="tab2">
+            <label for="tab2">Debian/Ubuntu</label>
+            <div class="tab-content" id="content2">
+                <h2 style="margin-bottom: 15px; font-size: 1.3em;">Adding this Repository to Debian/Ubuntu</h2>
+                <p style="margin-bottom: 15px; color: #ddd;">To use this repository on your Debian based system, add it using the following command:</p>
+                <div style="background: #282b30; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 3px solid rgb(42, 127, 254); overflow-x: auto;">
+                    <code style="font-family: 'Courier New', monospace; color: #bbb; white-space: pre-wrap; word-break: break-all;">echo "deb [trusted=yes] https://qkmaxware.github.io/callisto-packages/deb ./" | sudo tee /etc/apt/sources.list.d/callisto.list</code>
+                </div>
+                <p style="margin-bottom: 15px; color: #ddd;">Update your package cache:</p>
+                <div style="background: #282b30; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 3px solid rgb(42, 127, 254); overflow-x: auto;">
+                    <code style="font-family: 'Courier New', monospace; color: #bbb; white-space: pre-wrap; word-break: break-all;">sudo apt update</code>
+                </div>
+                <p style="margin-bottom: 15px; color: #ddd;">Then install packages with:</p>
+                <div style="background: #282b30; padding: 15px; border-radius: 5px; border-left: 3px solid rgb(42, 127, 254); overflow-x: auto;">
+                    <code style="font-family: 'Courier New', monospace; color: #bbb; white-space: pre-wrap; word-break: break-all;">sudo apt install &lt;package-name&gt;</code>
+                </div>
             </div>
+
         </div>
     </div>
 

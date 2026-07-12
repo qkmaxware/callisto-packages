@@ -51,24 +51,6 @@ jobs:
           echo "Repository contains $(find repo/rpm -name '*.rpm' | wc -l) total packages"
           
           GPG_KEY_ID=$(gpg --batch --with-colons --list-secret-keys | awk -F: '/^sec/ {print $5; exit}')
-          export GNUPGHOME="${GNUPGHOME:-$HOME/.gnupg}"
-          chmod 700 "$GNUPGHOME"
-
-          echo "Signing RPM packages with key: $GPG_KEY_ID..."
-          for rpm_path in repo/rpm/*.rpm; do
-            if [ -f "$rpm_path" ]; then
-              echo "Signing $(basename "$rpm_path")"
-              rpmsign --addsign "$rpm_path" \
-                --define "_gpg_name $GPG_KEY_ID" \
-                --define "_gpg_path $GNUPGHOME" \
-                --define "_gpgbin /usr/bin/gpg" \
-                --define "__gpg_sign_cmd %{__gpg} gpg --batch --yes --pinentry-mode loopback --passphrase-fd 3 -u %{_gpg_name} -sbo %{__signature_filename} %{__plaintext_filename}" \
-                3<<<"$GPG_KEY_PIN"
-
-              echo "Verifying signature for $(basename "$rpm_path")"
-              rpm -Kv "$rpm_path" | grep -q "Header V4 RSA/SHA256 Signature"
-            fi
-          done
 
           # Regenerate repository metadata with all packages (old and new)
           echo "Regenerating repository metadata..."

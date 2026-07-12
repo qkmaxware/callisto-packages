@@ -65,7 +65,8 @@ jobs:
                 --define "__gpg_sign_cmd %{__gpg} gpg --batch --yes --pinentry-mode loopback --passphrase-fd 3 -u %{_gpg_name} -sbo %{__signature_filename} %{__plaintext_filename}" \
                 3<<<"$GPG_KEY_PIN"
 
-              rpm --checksig -v $rpm
+              echo "Verifying signature for $(basename "$rpm_path")"
+              rpm -Kv "$rpm_path" | grep -q "Header V4 RSA/SHA256 Signature"
             fi
           done
 

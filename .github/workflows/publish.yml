@@ -1,6 +1,7 @@
 name: Build and publish RPM packages
 
 on:
+  push:
   release:
     types: [published]
 
@@ -11,7 +12,6 @@ permissions:
 
 jobs:
   build-and-publish:
-    if: github.event.release.target_commitish == 'root'
     runs-on: ubuntu-latest
 
     steps:
@@ -83,9 +83,11 @@ jobs:
           echo "Copied packages.json"
 
       - name: Upload GitHub Pages artifact
+        if: github.event_name == 'release' && github.event.release.target_commitish == 'root'
         uses: actions/upload-pages-artifact@v5
         with:
           path: repo
 
       - name: Deploy to GitHub Pages
+        if: github.event_name == 'release' && github.event.release.target_commitish == 'root'
         uses: actions/deploy-pages@v5

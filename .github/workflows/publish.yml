@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install packaging tools
         run: |
@@ -78,7 +78,7 @@ jobs:
             fi
           done
 
-          echo "Copying generated package manifest"
+          echo "Copying generated package manifest..."
           cp packages.json repo/packages.json
           echo "Copied packages.json"
 

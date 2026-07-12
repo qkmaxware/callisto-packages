@@ -201,6 +201,58 @@
             margin-top: 30px; 
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
         }
+
+        .instructions h2 {
+            margin-bottom: 15px; 
+            font-size: 1.3em;
+        }
+        .instructions p {
+            margin-bottom: 15px; 
+            color: #ddd;
+        }
+        .instructions div {
+            position: relative;
+            background: #282b30;
+            padding-top: 15px;
+            padding-left: 15px;
+            padding-right: 15px;
+            padding-bottom: 15px;
+            border-radius: 5px; 
+            margin-bottom: 15px; 
+            border-left: 3px solid rgb(42, 127, 254); 
+            overflow-x: visible;
+        }
+        .instructions div button.copy{
+            position: absolute;
+            border: none;
+            cursor: pointer;
+            top: -26px;
+            right: 4px;
+            text-align: right;
+            background-color: transparent;
+            color: white;
+            border-radius: 6px;
+            padding-top: 2px;
+            padding-bottom: 2px;
+            padding-left: 6px;
+            padding-right: 24px;
+            background-image: url(copy.svg);
+            background-position: top 50% right 0;
+            background-repeat: no-repeat;
+            background-size: contain;
+            min-width: 24px;
+            height: 24px;
+        }
+        .instructions div button.copy:hover {
+            background-color: #484b50;
+        }
+
+        .instructions div code {
+            font-family: 'Courier New', monospace; 
+            color: #bbb; 
+            white-space: pre-wrap; 
+            word-break: break-all;
+        }
         
         .tabs {
             display: flex;
@@ -271,46 +323,58 @@
             <!-- Tab 1 -->
             <input type="radio" name="tab" id="tab1" checked>
             <label for="tab1">Fedora</label>
-            <div class="tab-content" id="content1">
-                <h2 style="margin-bottom: 15px; font-size: 1.3em;">Adding this Repository to Fedora</h2>
-                <p style="margin-bottom: 15px; color: #ddd;">To use this repository on your Fedora system, add it using the following command:</p>
-                <div style="background: #282b30; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 3px solid rgb(42, 127, 254); overflow-x: auto;">
-                    <code style="font-family: 'Courier New', monospace; color: #bbb; white-space: pre-wrap; word-break: break-all;">sudo dnf config-manager addrepo --from-repofile=https://qkmaxware.github.io/callisto-packages/callisto.repo</code>
+            <div class="tab-content instructions" id="content1">
+                <h2>Adding this Repository to Fedora</h2>
+                <p>To use this repository on your Fedora system, add it using the following command:</p>
+                <div>
+                    <button class="copy" onclick="copySiblingCodeToClipboard(this)"></button>
+                    <code>sudo dnf config-manager addrepo --from-repofile=https://qkmaxware.github.io/callisto-packages/callisto.repo</code>
                 </div>
-                <p style="margin-bottom: 15px; color: #ddd;">Or, manually create a repository configuration file:</p>
-                <div style="background: #282b30; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 3px solid rgb(42, 127, 254); overflow-x: auto;">
-                    <code style="font-family: 'Courier New', monospace; color: #bbb; white-space: pre-wrap; word-break: break-all;">sudo nano /etc/yum.repos.d/callisto.repo</code>
+                <p>Or, manually create a repository configuration file:</p>
+                <div>
+                    <button class="copy" onclick="copySiblingCodeToClipboard(this)"></button>
+                    <code>sudo nano /etc/yum.repos.d/callisto.repo</code>
                 </div>
-                <p style="margin-bottom: 15px; color: #ddd;">Add the following content:</p>
-                <div style="background: #282b30; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 3px solid rgb(42, 127, 254); overflow-x: auto;">
+                <p>Add the following content:</p>
+                <div>
+                    <button class="copy" onclick="copySiblingCodeToClipboard(this)"></button>
                     <pre style="color: #bbb; margin: 0; white-space: pre-wrap; word-break: break-all;">[callisto]
 name=Callisto RPM Repository
 baseurl=https://qkmaxware.github.io/callisto-packages/rpm
 enabled=1
 gpgcheck=0</pre>
                 </div>
-                <p style="margin-bottom: 15px; color: #ddd;">Then install packages with:</p>
-                <div style="background: #282b30; padding: 15px; border-radius: 5px; border-left: 3px solid rgb(42, 127, 254); overflow-x: auto;">
-                    <code style="font-family: 'Courier New', monospace; color: #bbb; white-space: pre-wrap; word-break: break-all;">sudo dnf install &lt;package-name&gt;</code>
+                <p>Then install packages with:</p>
+                <div>
+                    <button class="copy" onclick="copySiblingCodeToClipboard(this)"></button>
+                    <code>sudo dnf install &lt;package-name&gt;</code>
                 </div>
             </div>
 
             <!-- Tab 2 -->
             <input type="radio" name="tab" id="tab2">
             <label for="tab2">Debian/Ubuntu</label>
-            <div class="tab-content" id="content2">
-                <h2 style="margin-bottom: 15px; font-size: 1.3em;">Adding this Repository to Debian/Ubuntu</h2>
-                <p style="margin-bottom: 15px; color: #ddd;">To use this repository on your Debian based system, add it using the following command:</p>
-                <div style="background: #282b30; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 3px solid rgb(42, 127, 254); overflow-x: auto;">
-                    <code style="font-family: 'Courier New', monospace; color: #bbb; white-space: pre-wrap; word-break: break-all;">echo "deb [trusted=yes] https://qkmaxware.github.io/callisto-packages/deb ./" | sudo tee /etc/apt/sources.list.d/callisto.list</code>
+            <div class="tab-content instructions" id="content2">
+                <h2>Adding this Repository to Debian/Ubuntu</h2>
+                <p>First import the public signing key:</p>
+                <div>
+                    <button class="copy" onclick="copySiblingCodeToClipboard(this)"></button>
+                    <code>curl -fsSL https://qkmaxware.github.io/callisto-packages/keys/publickey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/callisto-archive-keyring.gpg</code>
                 </div>
-                <p style="margin-bottom: 15px; color: #ddd;">Update your package cache:</p>
-                <div style="background: #282b30; padding: 15px; border-radius: 5px; margin-bottom: 15px; border-left: 3px solid rgb(42, 127, 254); overflow-x: auto;">
-                    <code style="font-family: 'Courier New', monospace; color: #bbb; white-space: pre-wrap; word-break: break-all;">sudo apt update</code>
+                <p>To use this repository on your Debian based system, add it using the following command:</p>
+                <div>
+                    <button class="copy" onclick="copySiblingCodeToClipboard(this)"></button>
+                    <code>echo "deb [signed-by=/usr/share/keyrings/callisto-archive-keyring.gpg] https://qkmaxware.github.io/callisto-packages/deb ./" | sudo tee /etc/apt/sources.list.d/callisto.list</code>
                 </div>
-                <p style="margin-bottom: 15px; color: #ddd;">Then install packages with:</p>
-                <div style="background: #282b30; padding: 15px; border-radius: 5px; border-left: 3px solid rgb(42, 127, 254); overflow-x: auto;">
-                    <code style="font-family: 'Courier New', monospace; color: #bbb; white-space: pre-wrap; word-break: break-all;">sudo apt install &lt;package-name&gt;</code>
+                <p>Update your package cache:</p>
+                <div>
+                    <button class="copy" onclick="copySiblingCodeToClipboard(this)"></button>
+                    <code>sudo apt update</code>
+                </div>
+                <p>Then install packages with:</p>
+                <div>
+                    <button class="copy" onclick="copySiblingCodeToClipboard(this)"></button>
+                    <code>sudo apt install &lt;package-name&gt;</code>
                 </div>
             </div>
 
@@ -362,23 +426,27 @@ gpgcheck=0</pre>
             resultsContainer.classList.remove('hidden');
         }
 
-        function copyElement(elementId) {
-            const element = document.getElementById(elementId);
-            const text = element.textContent;
-            
-            navigator.clipboard.writeText(text).then(() => {
-                const button = event.target;
-                const originalText = button.textContent;
-                button.textContent = '✓ Copied!';
-                button.classList.add('copied');
-                
-                setTimeout(() => {
-                    button.textContent = originalText;
-                    button.classList.remove('copied');
-                }, 2000);
-            }).catch(() => {
-                alert('Failed to copy. Please copy manually.');
-            });
+        
+        function copySiblingCodeToClipboard(button) {
+            if (!button)
+                return;
+
+            const siblingCode = button.nextElementSibling;
+            if (siblingCode && siblingCode.tagName.toLowerCase() === 'code') {
+                console.log(siblingCode);
+                const codeText = siblingCode.innerText;
+                console.log(codeText);
+                navigator.clipboard.writeText(codeText).then(() => {
+                    // Optionally, you can provide feedback to the user here, such as changing the button text temporarily
+                    const originalText = button.innerText;
+                    button.innerText = 'Copied';
+                    setTimeout(() => {
+                    button.innerText = originalText;
+                    }, 5000);
+                }).catch(err => {
+                    console.error('Failed to copy text: ', err);
+                });
+            }
         }
 
         // Load packages.json on page load

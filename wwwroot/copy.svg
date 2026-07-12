@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="174mm" height="174mm" viewBox="0 0 174 174" version="1.1" id="svg5" inkscape:version="1.4.3 (0d15f75, 2025-12-25)" sodipodi:docname="copy.svg" inkscape:export-filename="F:\Documents\OS_Projects\callisto\build_files\files\usr\share\pixmaps\callisto-logo-small.png" inkscape:export-xdpi="18.685057" inkscape:export-ydpi="18.685057" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <metadata id="metadata13">
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview id="namedview7" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" inkscape:pageshadow="2" inkscape:pageopacity="0.0" inkscape:pagecheckerboard="0" inkscape:document-units="mm" showgrid="false" inkscape:zoom="0.5499273" inkscape:cx="32.731599" inkscape:cy="531.88849" inkscape:window-width="1680" inkscape:window-height="979" inkscape:window-x="-8" inkscape:window-y="-8" inkscape:window-maximized="1" inkscape:current-layer="g1944" inkscape:document-rotation="0" inkscape:showpageshadow="2" inkscape:deskcolor="#d1d1d1"/>
+  <defs id="defs2"/>
+  <g inkscape:label="Layer 1" inkscape:groupmode="layer" id="layer1">
+    <g id="g1944" inkscape:label="Logo" transform="translate(-17.999883,-61.499882)">
+      <path id="rect1" style="fill:#2a7fff;stroke-width:9.3;stroke-linecap:round;stroke-linejoin:round" d="m 87.281624,68.235672 c -7.72974,0 -13.95264,6.222896 -13.95264,13.952637 v 97.186831 c 0,7.72974 6.2229,13.95264 13.95264,13.95264 h 70.244286 c 7.72974,0 13.95264,-6.2229 13.95264,-13.95264 V 107.5697 L 130.46038,68.235672 Z"/>
+      <path id="rect1-8" style="fill:#2a7fff;stroke-width:9.3;stroke-linecap:round;stroke-linejoin:round" d="m 54.943434,102.27382 c -7.72974,0 -13.95263,6.2229 -13.95263,13.95264 v 97.18683 c 0,7.72974 6.22289,13.95264 13.95263,13.95264 h 70.244286 c 7.72974,0 13.95264,-6.2229 13.95264,-13.95264 v -0.35915 H 55.527384 V 102.27382 Z"/>
+    </g>
+  </g>
+</svg>

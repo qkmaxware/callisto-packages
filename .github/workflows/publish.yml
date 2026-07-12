@@ -68,6 +68,13 @@ jobs:
           gzip -kf Packages
           apt-ftparchive release . > Release
 
+          GPG_KEY_ID=$(gpg --batch --with-colons --list-secret-keys | awk -F: '/^sec/ {print $5; exit}')
+          echo "Signing debian repository with key: $GPG_KEY_ID..."
+          gpg --batch --yes --pinentry-mode loopback --passphrase "${{ secrets.GPG_KEY_PIN }}" --local-user "$GPG_KEY_ID" --armor --detach-sign --output Release.gpg Release
+          gpg --verify Release.gpg Release
+          gpg --batch --yes --pinentry-mode loopback --passphrase "${{ secrets.GPG_KEY_PIN }}" --local-user "$GPG_KEY_ID" --clearsign --output InRelease Release
+          gpg --verify InRelease
+
       - name: Copy web interface to repository
         run: |
           set -euo pipefail
@@ -85,6 +92,11 @@ jobs:
           echo "Copying generated package manifest..."
           cp packages.json repo/packages.json
           echo "Copied packages.json"
+
+          echo "Copying public sigining key(s)..."
+          mkdir repo/keys
+          echo "${{ secrets.GPG_PUBLIC_KEY }}" > repo/keys/publickey.gpg
+          echo "Copied publickey.gpg"
 
       - name: Upload GitHub Pages artifact
         if: github.event_name == 'release' && github.event.release.target_commitish == 'root'

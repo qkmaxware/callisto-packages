@@ -64,6 +64,7 @@ jobs:
             rpmsign \
               --addsign "$rpm" \
               --define "__gpg_sign_cmd /usr/bin/gpg --batch --no-tty --pinentry-mode loopback --passphrase $GPG_KEY_PIN -u $GPG_KEY_ID -sbo %{__signature_filename} %{__plaintext_filename}"
+            rpm --checksig -v $rpm
           done
 
           # Regenerate repository metadata with all packages (old and new)

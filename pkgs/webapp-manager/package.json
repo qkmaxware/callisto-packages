@@ -4,6 +4,9 @@
     "license": "MIT",
     "description": "Web App Manager for Callisto OS",
     "cpu": [ "noarch" ],
+    "os": [
+        "rpm"
+    ],
     "dependencies": {
         "python-pyside6": "*"
     }

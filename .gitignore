@@ -1,2 +1,4 @@
 wwwroot/packages.json
 output/
+files/
+/packages.json

@@ -68,7 +68,8 @@ The `package.json` file within each package borrows heavily from the package.jso
       "capability-one", 
       "capability-two"
     ],
-    "replaces": []
+    "replaces": [],
+    "bin": {}
 }
 ```
 
@@ -89,6 +90,7 @@ The `package.json` file within each package borrows heavily from the package.jso
 | dependencies | -d DEPENDENCY | List of package dependencies, versions are ignored |
 | provides | --provides PROVIDES | Capabilities provided by this package |
 | replaces | --replaces REPLACES | Packages replaced by this package |
+| bin | | A mapping of OUTPUT_TYPE to prebuilt package files included in the package dir. ie {"rpm": "my_app.rpm"} |
 
 ## System Packages
 ### callisto-backgrounds

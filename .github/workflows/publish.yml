@@ -1,9 +1,11 @@
 name: Build and publish RPM packages
 
 on:
-  push:
+  workflow_dispatch:      # Whenever I want
+  schedule:
+    - cron: '0 0 1 * *'   # First day of each month
   release:
-    types: [published]
+    types: [published]    # Immediately when we publish
 
 permissions:
   contents: read

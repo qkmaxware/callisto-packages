@@ -2,8 +2,6 @@ name: Build and publish RPM packages
 
 on:
   workflow_dispatch:      # Whenever I want
-  schedule:
-    - cron: '0 0 1 * *'   # First day of each month
   release:
     types: [published]    # Immediately when we publish
 
@@ -115,11 +113,11 @@ jobs:
           echo "Copied publickey.gpg"
 
       - name: Upload GitHub Pages artifact
-        if: github.event_name == 'release' && github.event.release.target_commitish == 'root'
+        if: (github.event_name == 'release' && github.event.release.target_commitish == 'root') || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/root')
         uses: actions/upload-pages-artifact@v5
         with:
           path: repo
 
       - name: Deploy to GitHub Pages
-        if: github.event_name == 'release' && github.event.release.target_commitish == 'root'
+        if: (github.event_name == 'release' && github.event.release.target_commitish == 'root') || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/root')
         uses: actions/deploy-pages@v5

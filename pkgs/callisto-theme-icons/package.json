@@ -1,8 +1,0 @@
-{
-    "author": "qkmaxware",
-    "version": "1.0.0",
-    "license": "MIT",
-    "description": "Tela icon theme by vinceliuice (https://github.com/vinceliuice) customized for Callisto OS",
-    "cpu": [ "noarch" ],
-    "dependencies": { }
-}

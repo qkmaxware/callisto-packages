@@ -3,6 +3,9 @@ mkdir -p ./files/usr/share/icons ./files/usr/share/licenses/callisto-tela-icon-t
 # Clone icons and build them
 git clone --depth=1 https://github.com/vinceliuice/Tela-icon-theme.git src
 ./src/install.sh -c -d ./src/output -n "Tela (Callisto)"
+rm -rf "./src/output/Tela (Callisto)/icon-theme.cache"
+rm -rf "./src/output/Tela (Callisto)-dark/icon-theme.cache"
+rm -rf "./src/output/Tela (Callisto)-light/icon-theme.cache"
 
 # Copy compiled icons to root for packaging
 cp -r src/output/. ./files/usr/share/icons/    # Copies files

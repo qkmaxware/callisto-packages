@@ -2,6 +2,7 @@ name: Build Packages and Publish Release
 
 on:
   workflow_dispatch:      # Whenever I want
+  push: 
   release:
     types: [published]    # Immediately when we publish
 

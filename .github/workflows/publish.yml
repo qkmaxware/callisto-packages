@@ -1,4 +1,4 @@
-name: Build and publish RPM packages
+name: Build Packages and Publish Release
 
 on:
   workflow_dispatch:      # Whenever I want

@@ -17,8 +17,37 @@ for dir in 'files/usr/share/icons/Tela (Callisto)/32/status/' 'files/usr/share/i
     cp -f ../callisto-logos/start-here.svg "$dir"
 done
 find files/usr/share/icons -type f -name 'fedora-logo.*' -print -exec cp -f ../callisto-logos/callisto-logo.svg {} \;
-cp -rf icons/. 'files/usr/share/icons/Tela (Callisto)/'
-cp -rf icons/. 'files/usr/share/icons/Tela (Callisto)-dark/'
+
+copy_icon_tree() {
+    local src_dir="$1"
+    local dest_dir="$2"
+
+    if [ -L "$dest_dir" ]; then
+        echo "Skipping symlink target: $dest_dir"
+        return 0
+    fi
+
+    if [ -e "$dest_dir" ] && [ ! -d "$dest_dir" ]; then
+        echo "Skipping non-directory target: $dest_dir"
+        return 0
+    fi
+
+    mkdir -p "$dest_dir"
+    cp -a "$src_dir"/. "$dest_dir"/
+}
+
+for theme_dir in \
+    'files/usr/share/icons/Tela (Callisto)' \
+    'files/usr/share/icons/Tela (Callisto)-dark' \
+    'files/usr/share/icons/Tela (Callisto)-light'; do
+    while IFS= read -r src_dir; do
+        rel_path="${src_dir#icons/}"
+        if [ "$rel_path" = "$src_dir" ]; then
+            continue
+        fi
+        copy_icon_tree "$src_dir" "$theme_dir/$rel_path"
+    done < <(find icons -mindepth 1 -type d | sort)
+done
 
 # Clean broken symlinks
 find ./files -xtype l -print -delete

@@ -33,7 +33,32 @@ copy_icon_tree() {
     fi
 
     mkdir -p "$dest_dir"
-    cp -a "$src_dir"/. "$dest_dir"/
+
+    for entry in "$src_dir"/*; do
+        [ -e "$entry" ] || continue
+
+        base_name="$(basename "$entry")"
+        dest_entry="$dest_dir/$base_name"
+
+        if [ -d "$entry" ]; then
+            if [ -L "$dest_entry" ]; then
+                echo "Skipping symlink target: $dest_entry"
+            elif [ -e "$dest_entry" ] && [ ! -d "$dest_entry" ]; then
+                echo "Skipping non-directory target: $dest_entry"
+            else
+                mkdir -p "$dest_entry"
+                copy_icon_tree "$entry" "$dest_entry"
+            fi
+        else
+            if [ -L "$dest_entry" ]; then
+                echo "Skipping symlink target: $dest_entry"
+            elif [ -e "$dest_entry" ] && [ ! -f "$dest_entry" ]; then
+                echo "Skipping non-directory target: $dest_entry"
+            else
+                cp -a "$entry" "$dest_entry"
+            fi
+        fi
+    done
 }
 
 for theme_dir in \

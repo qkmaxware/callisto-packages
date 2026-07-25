@@ -1,10 +1,11 @@
 {
     "author": "qkmaxware",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "license": "MIT",
     "description": "Callisto OS base theming for KDE Plasma, including branding, colours, style and icons",
     "cpu": [ "noarch" ],
     "dependencies": {
-        "callisto-logos": "*"
+        "callisto-logos": "*",
+        "callisto-tela-icon-theme": "*"
     }
 }

@@ -42,7 +42,7 @@ copy_icon_tree() {
 
         if [ -d "$entry" ]; then
             if [ -L "$dest_entry" ]; then
-                echo "Skipping symlink target: $dest_entry"
+                echo "Skipping directory symlink target: $dest_entry"
             elif [ -e "$dest_entry" ] && [ ! -d "$dest_entry" ]; then
                 echo "Skipping non-directory target: $dest_entry"
             else
@@ -50,11 +50,10 @@ copy_icon_tree() {
                 copy_icon_tree "$entry" "$dest_entry"
             fi
         else
-            if [ -L "$dest_entry" ]; then
-                echo "Skipping symlink target: $dest_entry"
-            elif [ -e "$dest_entry" ] && [ ! -f "$dest_entry" ]; then
-                echo "Skipping non-directory target: $dest_entry"
+            if [ -e "$dest_entry" ] && [ -d "$dest_entry" ]; then
+                echo "Skipping file overwrite into directory target: $dest_entry"
             else
+                rm -f "$dest_entry"
                 cp -a "$entry" "$dest_entry"
             fi
         fi

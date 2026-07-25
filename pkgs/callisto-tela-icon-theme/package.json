@@ -1,6 +1,6 @@
 {
     "author": "qkmaxware",
-    "version": "0.4.0",
+    "version": "0.5.0",
     "license": "GPL-3.0-only",
     "description": "A work in progress icon pack for Callisto OS",
     "cpu": [ "noarch" ],

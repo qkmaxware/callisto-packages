@@ -21,8 +21,16 @@ if (panel.formFactor === "horizontal") {
     }
 }
 
-panel.addWidget("dev.xarbit.appgrid")
-//panel.addWidget("org.kde.plasma.showActivityManager")
+var appgrid = panel.addWidget("dev.xarbit.appgrid");
+appgrid.currentConfigGroup = ["General"];
+appgrid.writeConfig("backgroundOpacity", "100");
+appgrid.writeConfig("enableBackgroundContrast", "false");
+appgrid.writeConfig("enableBlur", "false");
+appgrid.writeConfig("gridColumns", "6");
+appgrid.writeConfig("hoverAnimation", "0");
+appgrid.writeConfig("startWithFavorites", "true");
+appgrid.writeConfig("useThemeBackground", "true");
+
 panel.addWidget("org.kde.plasma.icontasks")
 panel.addWidget("org.kde.plasma.marginsseparator")
 panel.addWidget("org.kde.plasma.pager")

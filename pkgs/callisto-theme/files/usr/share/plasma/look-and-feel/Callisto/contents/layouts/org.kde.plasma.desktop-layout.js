@@ -23,6 +23,7 @@ if (panel.formFactor === "horizontal") {
 
 var appgrid = panel.addWidget("dev.xarbit.appgrid");
 appgrid.currentConfigGroup = ["General"];
+appgrid.writeConfig("useCustomButtonImage", "true");
 appgrid.writeConfig("customButtonImage", "callisto-logo");
 appgrid.writeConfig("backgroundOpacity", "100");
 appgrid.writeConfig("enableBackgroundContrast", "false");

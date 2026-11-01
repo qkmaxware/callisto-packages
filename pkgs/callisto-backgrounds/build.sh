@@ -1,9 +1,12 @@
 JSON_URL="https://qkmaxware.github.io/astrophotography/api/targets.json"
 OUTPUT_DIR="files/usr/share/wallpapers"
+GNOME_DIR="files/usr/share/backgrounds/Callisto"
+GNOME_METADATA="files/usr/share/gnome-background-properties/callisto-backgrounds.xml"
 BASE_URL="https://qkmaxware.github.io"
 
-# Create output directory
-mkdir -p "$OUTPUT_DIR"
+# Create output directories and start the GNOME wallpaper catalog.
+mkdir -p "$OUTPUT_DIR" "$GNOME_DIR" "$(dirname "$GNOME_METADATA")"
+printf '<?xml version="1.0" encoding="UTF-8"?>\n<wallpapers>\n' > "$GNOME_METADATA"
 
 # Fetch JSON and process
 curl -s "$JSON_URL" | jq -r '.[] | "\(.title)\t\(.url)"' | while IFS=$'\t' read -r title rel_path; do
@@ -33,7 +36,14 @@ curl -s "$JSON_URL" | jq -r '.[] | "\(.title)\t\(.url)"' | while IFS=$'\t' read 
 
     # Download 
     curl -s -L "$full_url" -o "$output_file"
-    ln -s "$output_file" "$root_dir/contents/screenshot.${ext}"
+    ln -sfn "images/1920x1080.${ext}" "$root_dir/contents/screenshot.${ext}"
+
+    # GNOME reads wallpaper entries from /usr/share/gnome-background-properties.
+    gnome_file="$GNOME_DIR/${safe_title}.${ext}"
+    ln -sfn "../../wallpapers/$safe_title/contents/images/1920x1080.${ext}" "$gnome_file"
+    xml_title=$(jq -rn --arg value "$title" '$value | @html')
+    printf '  <wallpaper deleted="false">\n    <name>%s</name>\n    <filename>/usr/share/backgrounds/Callisto/%s.%s</filename>\n    <options>zoom</options>\n    <shade_type>solid</shade_type>\n    <pcolor>#000000</pcolor>\n    <scolor>#000000</scolor>\n  </wallpaper>\n' \
+        "$xml_title" "$safe_title" "$ext" >> "$GNOME_METADATA"
 
     # Create metadata file
     cat <<EOF > $root_dir/metadata.json
@@ -48,3 +58,5 @@ curl -s "$JSON_URL" | jq -r '.[] | "\(.title)\t\(.url)"' | while IFS=$'\t' read 
 }
 EOF
 done
+
+printf '</wallpapers>\n' >> "$GNOME_METADATA"
